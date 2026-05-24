@@ -1,7 +1,7 @@
 ---
 module: settings-integrity
 description: "Settings & config integrity check"
-inputs: []
+inputs: [skill_list]
 outputs: [settings_issues]
 parallel: false
 ---
@@ -19,8 +19,8 @@ Read fresh from `~/.claude/settings.json` and `~/.claude/settings.local.json`:
 
 ## Output Format
 
-| Issue | Location | Severity | Fix |
-|-------|----------|----------|-----|
+| Severity | Location | Issue | Fix |
+|----------|----------|-------|-----|
 
 ## Severity Mapping
 
