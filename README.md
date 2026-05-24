@@ -30,7 +30,6 @@ Modular config and environment management for Claude Code.
 | security-scan | Security scan |
 | dependency-check | Dependency check |
 | performance-metrics | Performance metrics |
-| encoding-check | Encoding issue detection |
 | auto-fix | Auto-fix logic |
 
 ## Development
