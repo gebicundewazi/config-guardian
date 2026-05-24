@@ -1,5 +1,5 @@
 ---
-name: config-guardian-v2
+name: config-guardian
 description: "Config audit + task retrospective. Modular architecture. Defaults to retrospective mode. Use `audit` for full config audit."
 ---
 
