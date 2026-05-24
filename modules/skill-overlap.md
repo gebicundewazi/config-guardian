@@ -37,7 +37,7 @@ Load skill descriptions + trigger words into context, then analyze:
 
 ## Integration
 
-- Report section: SKILL_OVERLAPS
+- Report section: SKILL OVERLAP
 - Output: raw issue-row compatible lines (one per overlap pair)
 - Consumed by: main-dispatcher -> report-section.md template
 

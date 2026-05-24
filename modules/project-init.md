@@ -33,7 +33,7 @@ Read fresh from `$PWD/CLAUDE.md`:
 
 ## Integration
 
-- Report section: PROJECT_INIT
+- Report section: PROJECT INIT
 - Output: raw issue-row compatible lines (one per issue)
 - Consumed by: main-dispatcher -> report-section.md template
 

@@ -33,7 +33,7 @@ Read fresh from `~/.claude/settings.json` and `~/.claude/settings.local.json`:
 
 ## Integration
 
-- Report section: SETTINGS ISSUES
+- Report section: SETTINGS & CONFIG
 - Output: raw issue-row compatible lines (one per issue)
 - Consumed by: main-dispatcher -> report-section.md template
 

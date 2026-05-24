@@ -32,7 +32,7 @@ Read recent transcript logs (if available):
 
 ## Integration
 
-- Report section: PERMISSION_ALLOWLIST
+- Report section: PERMISSION ALLOWLIST
 - Output: raw issue-row compatible lines (one per permission issue)
 - Consumed by: main-dispatcher -> report-section.md template
 
