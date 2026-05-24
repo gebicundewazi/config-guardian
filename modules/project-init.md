@@ -19,8 +19,23 @@ Read fresh from `$PWD/CLAUDE.md`:
 
 ## Output Format
 
-| Issue | Status | Recommendation |
-|-------|--------|----------------|
+| Severity | Location | Issue | Fix |
+|----------|----------|-------|-----|
+
+## Severity Mapping
+
+| Level | Criteria |
+|-------|----------|
+| Critical | CLAUDE.md exists but is unreadable or corrupt |
+| High | Missing mandatory sections (rule index, red lines) |
+| Medium | Missing recommended sections (routing table, workflows) |
+| Low | Minor template drift or outdated version string |
+
+## Integration
+
+- Report section: PROJECT_INIT
+- Output: raw issue-row compatible lines (one per issue)
+- Consumed by: main-dispatcher -> report-section.md template
 
 ## Error Handling
 
