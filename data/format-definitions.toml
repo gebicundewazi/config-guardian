@@ -1,0 +1,29 @@
+# Format definitions for config-guardian reports
+
+[report]
+sections = [
+  "CONFLICTS",
+  "REDUNDANCIES",
+  "STALE_REFERENCES",
+  "ENVIRONMENT_ISSUES",
+  "SKILL_OVERLAP",
+  "SETTINGS_CONFIG",
+  "PROJECT_INIT",
+  "PERMISSION_ALLOWLIST",
+  "SECURITY_SCAN",
+  "DEPENDENCY_CHECK",
+  "PERFORMANCE_METRICS",
+  "ENCODING_ISSUES"
+]
+
+[severity]
+levels = ["Critical", "High", "Medium", "Low"]
+
+[tiers]
+tier1 = "Full Auto"
+tier2 = "Recommend + Confirm"
+tier3 = "Report Only"
+
+[cache]
+max_age_days = 30
+stale_threshold_days = 7
