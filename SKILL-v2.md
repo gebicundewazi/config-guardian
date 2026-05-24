@@ -17,7 +17,6 @@ Modular config and environment management for Claude Code. **Default mode: Task 
 | `--skip-env` | Modifier (audit) | Skip environment checks |
 | `--auto-fix` | Modifier (audit) | Auto-apply safe fixes after audit |
 | `--quick` | Modifier (audit) | Skip LLM semantic layers and env checks |
-| `--incremental` | Modifier (audit) | Only scan changed files |
 
 ## Shared Preamble
 
@@ -52,6 +51,12 @@ All modes share a one-time file read. Results cached for session duration.
 - Refresh if mtime changed since last read
 - Support incremental updates for changed files only
 
+### Error Handling
+
+- Missing file → record as stale ref, continue
+- Read error → record failure, mode decides if fatal
+- Cache lives for session duration. Repeated audits reuse cached reads.
+
 ---
 
 ## Mode B: Task Retrospective (Default)
@@ -85,6 +90,28 @@ Triggered when no args, or `retrospective` is passed explicitly.
 | **Surprise** | Unexpected behavior or result was encountered |
 | **Decision** | A non-obvious technical choice was made |
 | **Lesson** | Reusable experience or pitfall was identified |
+
+**Minimal output example (Light, no issues):**
+
+```
+## Task Retrospective — 2026-05-24
+
+**Result**: Success — fixed login page token expiry redirect
+**Duration**: 3min / 5min expected
+```
+
+**Full output example (Deep, with issues):**
+
+```
+## Task Retrospective — 2026-05-24
+
+**Result**: Success — generated 6-panel Nature publication figure
+**Duration**: 25min / 15min expected
+
+**Blocker**: svglite 1.2.0 produced garbled Chinese labels under WSL2; downgraded to 1.1.0
+**Decision**: Used patchwork over cowplot for multi-panel assembly — patchwork handles ggplot2 3.5+ theme inheritance more reliably
+**Lesson**: Validate R package versions in container before upgrading in WSL2
+```
 
 ### B3. Memory Write Decision -- Three-Tier Gate
 
@@ -143,14 +170,103 @@ Triggered by `audit` or `--audit`.
 - Save report to `~/.claude/memory/audit_report_{date}.md`
 - Add to MEMORY.md index
 
+### Aggregated Report Template
+
+```markdown
+# Config Audit Report — {date}
+
+## CONFLICTS ({count})
+| Location | Rule A | Rule B | Severity | Fix |
+|----------|--------|--------|----------|-----|
+
+## STALE REFERENCES ({count})
+| Reference | Location | Status | Fix |
+|-----------|----------|--------|-----|
+
+## ENVIRONMENT ISSUES ({count})
+| Component | Status | Details |
+|-----------|--------|---------|
+
+## SKILL OVERLAP ({count})
+| Skills | Overlap | Recommendation |
+|--------|---------|----------------|
+
+## SETTINGS & CONFIG ({count})
+| Issue | Location | Severity | Fix |
+|-------|----------|----------|-----|
+
+## PROJECT INIT ({count})
+| Issue | Status | Recommendation |
+|-------|--------|----------------|
+
+## PERMISSION ALLOWLIST ({count})
+| Tool | DenyCount | SuggestedRule | Coverage |
+|------|-----------|---------------|----------|
+
+## SECURITY SCAN ({count})
+| File | Issue | Severity | Fix |
+|------|-------|----------|-----|
+
+## DEPENDENCY CHECK ({count})
+| Skill | Issue | Severity | Fix |
+|-------|-------|----------|-----|
+
+## PERFORMANCE METRICS ({count})
+| Metric | Value | Status | Recommendation |
+|--------|-------|--------|----------------|
+
+## ENCODING ISSUES ({count})
+| File | Issue | Fix |
+|------|-------|-----|
+
+## SUMMARY
+- Total issues: {n}
+- High severity: {n}
+- Recommended actions: {n}
+```
+
+### Auto-Fix Coordination
+
+When `--auto-fix` is set, after audit completes:
+
+1. Pass aggregated issues to `modules/auto-fix.md`
+2. Tier 1 fixes applied automatically
+3. Tier 2 fixes listed for user confirmation
+4. Tier 3 issues reported only
+5. Re-run audit (A1-A8) to verify fixes
+6. Output fix report:
+
+```markdown
+# Auto-Fix Report — {date}
+
+## AUTO-FIXED ({count})
+| Issue | Location | Fix Applied |
+|-------|----------|-------------|
+
+## PENDING CONFIRMATION ({count})
+| Issue | Location | Recommendation |
+|-------|----------|----------------|
+
+## NEEDS REVIEW ({count})
+| Issue | Location | Severity | Recommendation |
+|-------|----------|----------|----------------|
+```
+
 ### Quick Mode (`--quick`)
 
 | Step | Normal | `--quick` |
 |------|--------|-----------|
-| String-level checks | Always | Always |
-| LLM semantic layers | Run | Skip |
-| Environment checks | Run | Skip (or `--skip-env`) |
-| Report format | Full | Compact single-table |
+| A1 | String + LLM layers | String layer only |
+| A2 | Local + cross-session full scan | Local memory orphan check only |
+| A3 | Full env: R + Python + Git | Git version only |
+| A4 | String + LLM + Frequency layers | String layer only |
+| A5 | Full aggregated report | Compact single-table report |
+| A6 | Settings/config integrity check | Structure check only |
+| A7 | Project init + template diff | CLAUDE.md existence check |
+| A8 | Transcript scan + allowlist audit | Allowlist existence check |
+| A9 | Security scan | Skip |
+| A10 | Dependency check | Skip |
+| A11 | Performance metrics | Skip |
 
 Report saved to `~/.claude/memory/audit_report_{date}_quick.md`
 
@@ -162,8 +278,10 @@ On completion, output `[[SYS_SKILL_FINISH]]\ntype: end`.
 
 ## Constraints
 
-- DO NOT apply Tier 2/Tier 3 changes without user approval
+- DO NOT apply Tier 2/Tier 3 changes without user approval. Tier 1 auto-fix is always safe.
 - Each finding must include: location, severity, issue description, proposed fix
 - Environment checks use actual command execution, not assumptions
+- If a check command fails (e.g., R not installed), report as issue, don't error out
 - Report saved to `~/.claude/memory/audit_report_{date}.md`
-- Preamble cache valid for session duration
+- `--quick` saves to `~/.claude/memory/audit_report_{date}_quick.md`
+- Preamble cache valid for session duration. For repeated audits within same session, reuse cached reads.
