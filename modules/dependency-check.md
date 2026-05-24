@@ -17,12 +17,27 @@ Verify skill dependencies:
 - Check for circular dependencies
 - Validate skill frontmatter completeness
 
+## Severity Mapping
+
+| Level | Criteria |
+|-------|----------|
+| Critical | Core skill missing, breaks chain |
+| High | Circular dependency detected |
+| Medium | Incomplete frontmatter (missing required fields) |
+| Low | Optional skill missing or unused |
+
 ## Output Format
 
 | Skill | Issue | Severity | Fix |
 |-------|-------|----------|-----|
 
+## Integration
+
+- Report section: DEPENDENCY CHECK
+- Output: raw issue-row compatible lines (one per dependency issue)
+- Consumed by: main-dispatcher -> report-section.md template
+
 ## Error Handling
 
-- Missing skills -> record as issue
-- Invalid routing -> record as WARNING
+- Missing skills → record as Critical
+- Invalid routing → record as High
