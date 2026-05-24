@@ -31,6 +31,20 @@ wait
 | Component | Status | Details |
 |-----------|--------|---------|
 
+## Status Mapping
+
+| Value | Criteria |
+|-------|----------|
+| OK | Command found and version retrieved |
+| MISSING | Command not found or import fails |
+| WARNING | Command found but version check returns non-zero or unexpected output |
+
+## Integration
+
+- Report section: ENVIRONMENT ISSUES
+- Output: raw issue-row compatible lines (one per environment component)
+- Consumed by: main-dispatcher -> report-section.md template
+
 ## Error Handling
 
 - Command not found → report as MISSING, don't error
