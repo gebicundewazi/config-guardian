@@ -13,7 +13,7 @@ parallel: true
 - Cross-compare every rule pair for literal contradictions
 - Check if any non-red-line rule overrides a red-line semantic
 - Flag rules with ambiguous or conflicting priority
-- Output: CONFLICTS table (Location, Rule A, Rule B, Severity, Fix)
+- Output: CONFLICTS table (Severity, Location, Rule A, Rule B, Fix)
 
 ### Layer 2 — LLM semantic (skip if --quick)
 
@@ -25,8 +25,23 @@ Load `rule_files` content into context, then analyze:
 
 ## Output Format
 
-| Location | Rule A | Rule B | Severity | Fix |
-|----------|--------|--------|----------|-----|
+| Severity | Location | Rule A | Rule B | Fix |
+|----------|----------|--------|--------|-----|
+
+## Severity Mapping
+
+| Level | Criteria |
+|-------|----------|
+| Critical | Red-line violation or data loss risk |
+| High | Functional conflict affecting behavior |
+| Medium | Ambiguity requiring human review |
+| Low | Stylistic or redundant rule |
+
+## Integration
+
+- Report section: CONFLICTS
+- Output: raw issue-row compatible lines (one per conflict)
+- Consumed by: main-dispatcher → report-section.md template
 
 ## Error Handling
 
