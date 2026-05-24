@@ -27,6 +27,20 @@ Load skill descriptions + trigger words into context, then analyze:
 | Skills | Overlap | Recommendation |
 |--------|---------|----------------|
 
+## Severity Mapping
+
+| Level | Criteria |
+|-------|----------|
+| High | Same trigger word matches 3+ skills |
+| Medium | 2 skills share a trigger word |
+| Low | Substring overlap only |
+
+## Integration
+
+- Report section: SKILL_OVERLAPS
+- Output: raw issue-row compatible lines (one per overlap pair)
+- Consumed by: main-dispatcher -> report-section.md template
+
 ## Error Handling
 
 - Missing skill files → skip, continue
