@@ -70,7 +70,7 @@ On completion, output `[[SYS_SKILL_FINISH]]\ntype: end`.
 
 ## Constraints
 
-- DO NOT apply Tier 2/Tier 3 changes without user approval. Tier 1 auto-fix is always safe.
+🔴 **CHECKPOINT — Tier gating is mandatory.** DO NOT apply Tier 2/Tier 3 changes without user approval. Tier 1 auto-fix is always safe.
 - Each finding must include: location, severity, issue description, proposed fix
 - Environment checks use actual command execution, not assumptions
 - If a check command fails (e.g., R not installed), report as issue, don't error out
@@ -79,6 +79,8 @@ On completion, output `[[SYS_SKILL_FINISH]]\ntype: end`.
 - Preamble cache valid for session duration. For repeated audits within same session, reuse cached reads.
 
 ## Anti-Patterns (不要做什么)
+
+🛑 **STOP — If any item below is triggered, halt and report to user. Do NOT proceed silently.**
 
 | # | 不要 | 替代做法 |
 |---|------|---------|
