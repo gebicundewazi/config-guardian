@@ -67,6 +67,8 @@ Only run when depth is Standard or Deep.
 | 3 | Non-obvious tool/API behavior discovered |
 | 4 | Reproducible pitfall with root cause identified |
 
+If no Gate 1 condition matches → **skip memory write entirely**, proceed to output retrospective.
+
 **Gate 2 — Auto-Routing:**
 
 | Content type | Target file |
@@ -76,9 +78,19 @@ Only run when depth is Standard or Deep.
 | Active project state change | `project_{topic}.md` |
 | User role/knowledge profile | `user_profile.md` |
 
+If content type is ambiguous → use `feedback_{topic}.md` as default.
+
 **Gate 3 — Dedup:**
 
 1. Read target file (if exists)
 2. Equivalent -> skip
 3. Partial/outdated -> update
 4. No record -> create
+
+**Failure branches:**
+
+| Trigger | Handling |
+|---------|----------|
+| Target file read fails | Report warning, proceed with create |
+| Write fails (permission/disk) | Report error to user, do NOT retry silently |
+| All 3 gates fail on Standard/Deep task | Output retrospective without memory write, note "memory write skipped — no qualifying trigger" |
