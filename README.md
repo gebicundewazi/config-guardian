@@ -1,8 +1,111 @@
 # Config Guardian
 
-Claude Code 配置生态审计与任务复盘工具。
+> Claude Code 配置生态审计与任务复盘工具
+>
+> Config ecosystem audit and task retrospective for Claude Code
 
-## 简介
+[English](#english) | [中文](#中文)
+
+---
+
+## English
+
+### Introduction
+
+Config Guardian is a modular Claude Code skill for managing your configuration ecosystem. It helps you:
+
+- **Audit config health** — check consistency across CLAUDE.md, MEMORY.md, Skills, and Rules
+- **Retrospect on tasks** — structured review of execution: goals, decisions, outputs, lessons
+- **Auto-fix issues** — safely resolve common configuration problems with one command
+
+### Two Modes
+
+| Mode | Command | Purpose |
+|------|---------|---------|
+| **Retrospective** (default) | `config-guardian` | Task retrospective: goals → decisions → outputs → lessons |
+| **Audit** | `config-guardian audit` | Full configuration ecosystem health check |
+
+#### Audit Options
+
+```bash
+config-guardian audit            # Full audit (env checks + LLM semantic layers)
+config-guardian audit --quick    # Quick audit (skip env checks and LLM layers)
+config-guardian audit --auto-fix # Audit then auto-fix safe issues
+config-guardian audit --skip-env # Skip environment checks
+```
+
+### Audit Modules
+
+| Module | What It Checks |
+|--------|---------------|
+| `rule-conflict` | Rule conflict analysis |
+| `memory-health` | MEMORY.md health (orphaned indexes, unindexed files) |
+| `env-check` | Tool environment availability |
+| `skill-overlap` | Skill trigger word overlap |
+| `settings-integrity` | settings.json integrity |
+| `project-init` | Project initialization health |
+| `permission-audit` | Permission configuration audit |
+| `security-scan` | Security scan (hardcoded keys, sensitive files) |
+| `dependency-check` | Dependency verification |
+| `performance-metrics` | Performance metrics |
+| `auto-fix` | Auto-fix logic |
+
+### Architecture
+
+```
+config-guardian/
+├── SKILL.md              # Main dispatcher (~100 lines)
+├── modes/
+│   ├── retrospective.md  # Retrospective mode
+│   └── audit.md          # Audit mode
+├── modules/              # 11 independent check modules
+├── templates/            # Report templates
+├── data/                 # Format definitions
+└── scripts/              # Helper scripts
+```
+
+### Installation
+
+```bash
+git clone https://github.com/gebicundewazi/config-guardian.git ~/.claude/skills/config-guardian
+```
+
+### Example Output
+
+**Retrospective mode:**
+
+```markdown
+## Task Retrospective
+- Goal: Fix 3 configuration issues
+- Decision: Prioritize security fixes, defer performance optimization
+- Output: settings.json updated, 2 rule files corrected
+- Lesson: Rule naming needs a more unified convention
+```
+
+**Audit mode:**
+
+```
+✅ PASS  rule-conflict    — No rule conflicts
+⚠️ WARN  memory-health    — 3 orphaned indexes
+✅ PASS  skill-overlap    — No trigger word overlap
+🔴 FAIL  security-scan    — 1 hardcoded token found
+🔧 FIXED auto-fix         — Safe issues auto-fixed
+```
+
+### Contributing
+
+To add a new check module:
+
+1. Create a module file in `modules/`
+2. Follow the interface spec (see `rule-conflict.md`)
+3. Add it to parallel/sequential groups in `SKILL.md`
+4. Update `data/format-definitions.toml` if needed
+
+---
+
+## 中文
+
+### 简介
 
 Config Guardian 是一个模块化的 Claude Code 配置管理 Skill，帮助你：
 
@@ -10,14 +113,14 @@ Config Guardian 是一个模块化的 Claude Code 配置管理 Skill，帮助你
 - **任务复盘**：结构化回顾任务执行过程，记录决策和产出
 - **自动修复**：安全的配置问题可一键修复
 
-## 两种模式
+### 两种模式
 
-| 模式 | 触发方式 | 用途 |
-|------|---------|------|
+| 模式 | 命令 | 用途 |
+|------|------|------|
 | **任务复盘**（默认） | `config-guardian` | 复盘任务执行：目标→决策→产出→教训 |
 | **配置审计** | `config-guardian audit` | 全量检查配置生态系统健康状态 |
 
-### 审计模式参数
+#### 审计模式参数
 
 ```bash
 config-guardian audit            # 全量审计（含环境检查 + LLM 语义层）
@@ -26,7 +129,7 @@ config-guardian audit --auto-fix # 审计后自动修复安全项
 config-guardian audit --skip-env # 跳过环境检查
 ```
 
-## 审计模块
+### 审计模块
 
 | 模块 | 检查内容 |
 |------|---------|
@@ -42,7 +145,7 @@ config-guardian audit --skip-env # 跳过环境检查
 | `performance-metrics` | 性能指标 |
 | `auto-fix` | 自动修复逻辑 |
 
-## 架构
+### 架构
 
 ```
 config-guardian/
@@ -56,15 +159,15 @@ config-guardian/
 └── scripts/              # 辅助脚本
 ```
 
-## 安装
+### 安装
 
 ```bash
 git clone https://github.com/gebicundewazi/config-guardian.git ~/.claude/skills/config-guardian
 ```
 
-## 典型输出
+### 典型输出
 
-### 复盘模式
+**复盘模式：**
 
 ```markdown
 ## 任务复盘
@@ -74,7 +177,7 @@ git clone https://github.com/gebicundewazi/config-guardian.git ~/.claude/skills/
 - 教训：规则命名需要更统一的约定
 ```
 
-### 审计模式
+**审计模式：**
 
 ```
 ✅ PASS  rule-conflict    — 无规则冲突
@@ -84,7 +187,7 @@ git clone https://github.com/gebicundewazi/config-guardian.git ~/.claude/skills/
 🔧 FIXED auto-fix         — 已自动修复安全项
 ```
 
-## 开发
+### 开发
 
 添加新检查模块：
 
@@ -93,6 +196,8 @@ git clone https://github.com/gebicundewazi/config-guardian.git ~/.claude/skills/
 3. 在 `SKILL.md` 中添加到并行/串行执行组
 4. 按需更新 `data/format-definitions.toml`
 
-## 许可
+---
+
+## License / 许可
 
 MIT
