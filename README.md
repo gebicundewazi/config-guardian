@@ -1,4 +1,4 @@
-# Config Guardian v2
+# Config Guardian
 
 Modular config and environment management for Claude Code.
 
